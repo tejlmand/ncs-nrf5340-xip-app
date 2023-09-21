@@ -1,0 +1,88 @@
+# The west manifest file (west.yml) for the nRF Connect SDK (NCS) XIP Example application.
+#
+# The per-workspace west configuration file, ncs/.west/config,
+# specifies the location of this manifest file like this:
+#
+#     [manifest]
+#     path = xip_app
+#
+# See the west documentation for more information:
+#
+# https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/zephyr/guides/west/index.html
+
+manifest:
+  version: "0.13"
+
+  # "remotes" is a list of locations where git repositories are cloned
+  # and fetched from.
+  remotes:
+    # nRF Connect SDK GitHub organization.
+    # NCS repositories are hosted here.
+    - name: ncs
+      url-base: https://github.com/nrfconnect
+    - name: nordicjm
+      url-base: https://github.com/nordicjm
+
+  # If not otherwise specified, the projects below should be obtained
+  # from the ncs remote.
+  defaults:
+    remote: ncs
+
+  group-filter: [+homekit, +nrf-802154, -dragoon, -find-my, -ant, -babblesim, -sidewalk, -bsec]
+
+  # "projects" is a list of git repositories which make up the NCS
+  # source code.
+  #
+  # For 'userdata' fields in the projects area, please refer to:
+  # https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/dm_code_base.html
+  projects:
+
+    # The sdk-nrf repo in the NCS, which is the manifest project from where
+    # other projects will be imported.
+    #
+    # https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/zephyr/introduction/index.html
+    # https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/zephyr/guides/modules.html
+    - name: nrf
+      repo-path: sdk-nrf
+      revision: e530db1cb0f1d6609ff79f5325d29096b82d4319
+      import:
+        # In addition to the zephyr repository itself, NCS also
+        # imports the contents of zephyr/west.yml at the above
+        # revision. Only the projects explicitly named in the
+        # following allowlist are imported.
+        #
+        # Note that the zephyr west extensions (like 'build', 'flash',
+        # 'debug', etc.) are automatically provided by this import, so
+        # there's no need to add a redundant west-commands: key for
+        # the zephyr project.
+        #
+        # Please keep this list sorted alphabetically.
+        name-allowlist:
+        - zephyr
+        - qcbor
+        - mbedtls
+        - nrfxlib
+        - trusted-firmware-m
+        - matter
+        - cjson
+        - openthread
+        - cmsis
+        - hal_nordic
+        - libmetal
+        - littlefs
+        - open-amp
+        - segger
+        - tinycrypt
+        - zcbor
+
+    - name: mcuboot
+      repo-path: sdk-mcuboot
+      revision: 8fba4db81dc9aefa6b7481b3b9a6c5589214e13e
+      path: bootloader/mcuboot
+
+  # West-related configuration for the nrf repository.
+  self:
+    # This repository should be cloned to ncs/nrf.
+    path: xip_app
+#    # This line configures west extensions.
+#    west-commands: scripts/west-commands.yml
